@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -x # Enables printing of each command
+
+SRC_DIR=src
+SRC_C=$(find ${SRC_DIR}/* -name "*.c")
+SRC=$(find ${SRC_DIR}/*)
+BUILD_DIR=build
+
+mkdir -p $BUILD_DIR
+rm -f $BUILD_DIR/*
+gcc $SRC_C main.c -o "${BUILD_DIR}/hh_c"
+gcc -D_DEBUG $SRC_C main.c -o "${BUILD_DIR}/hh_c_debug"
+g++ $SRC main.cpp -o "${BUILD_DIR}/hh_cpp"
+g++ -D_DEBUG $SRC main.cpp -o "${BUILD_DIR}/hh_cpp_debug"
+ls -l --color build/*
+
+

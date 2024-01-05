@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "hh-header.h": "c",
+        "stddef.h": "c",
+        "ptld_c.h": "c",
+        "hh-main.h": "c",
+        "ptld_cpp.h": "c",
+        "hh-memory-c.h": "c",
+        "hh-corruption.h": "c",
+        "memory.h": "c"
+    }
+}
