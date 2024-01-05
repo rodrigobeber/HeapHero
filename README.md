@@ -1,7 +1,7 @@
-This my project to custom detect memory leaks, and corrputions (underrun and overflow)
-It implements wrappers for C malloc/free and overloads for C++ new/delete operators.
-It mantains a double linked this with all the allocated memory and informations.
-It still needs some additional support like for realloc and calloc but the goal here is only skills demonstration.
+My project to detect memory leaks, and corrputions (underrun and overflow).
+It's compatible with C and C++ applications.
+It implements wrappers for C malloc/calloc/realloc/free and overloads for C++ new/delete operators.
+It mantains a linked list with information about the memory blocks.
 
 To use it in another project:
 - include hh-main.h
