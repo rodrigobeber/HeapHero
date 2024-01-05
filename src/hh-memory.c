@@ -62,42 +62,6 @@ void *hhCalloc(size_t num, size_t size, const char* pFunction, const char *pFile
     return allocated_mem;
 }
 
-void *hhRealloc(void *p, size_t size, const char* pFunction, const char *pFile, int lineNo) {
-
-    // If the old pointer is NULL, then it's just like malloc
-    if (p == NULL) {
-        return hhMallock(size, pFunction, pFile, lineNo);
-    }
-
-    // If size is zero, free the memory and return NULL
-    if (size == 0) {
-        hhFree(p);
-        return NULL;
-    }
-
-    // Adjust p to point to the start of the header
-    struct hhMemoryBlockHeader *oldBlock = (struct hhMemoryBlockHeader*)p - 1;
-
-    // Allocate new memory with the requested size
-    void *new_mem = hhMallock(size, pFunction, pFile, lineNo);
-    if (!new_mem) {
-        return NULL;
-    }
-
-    // Calculate the size to be copied (the smaller of the old and new sizes)
-    size_t oldSize = oldBlock->m_Size;
-    size_t copySize = oldSize < size ? oldSize : size;
-
-    // Copy the user data from the old memory block to the new one
-    // Adjust new_mem to point to the user data part of the new block
-    memcpy((unsigned char*)new_mem + sizeof(struct hhMemoryBlockHeader), (unsigned char*)p, copySize);
-
-    // Free the old memory block
-    hhFree(p);
-
-    return new_mem;
-}
-
 int _isValidBlock(struct hhMemoryBlockHeader *block) {
     for (struct hhMemoryBlockHeader *p = pHead; p != NULL; p = p->m_pNext) {
         if (block == p) {
@@ -134,4 +98,40 @@ void hhFree(void *p) {
     if (_isValidBlock(block)) {
         _removeBlock(block);
     }
+}
+
+void *hhRealloc(void *p, size_t size, const char* pFunction, const char *pFile, int lineNo) {
+
+    // If the old pointer is NULL, then it's just like malloc
+    if (p == NULL) {
+        return hhMallock(size, pFunction, pFile, lineNo);
+    }
+
+    // If size is zero, free the memory and return NULL
+    if (size == 0) {
+        hhFree(p);
+        return NULL;
+    }
+
+    // Adjust p to point to the start of the header
+    struct hhMemoryBlockHeader *oldBlock = (struct hhMemoryBlockHeader*)p - 1;
+
+    // Allocate new memory with the requested size
+    void *new_mem = hhMallock(size, pFunction, pFile, lineNo);
+    if (!new_mem) {
+        return NULL;
+    }
+
+    // Calculate the size to be copied (the smaller of the old and new sizes)
+    size_t oldSize = oldBlock->m_Size;
+    size_t copySize = oldSize < size ? oldSize : size;
+
+    // Copy the user data from the old memory block to the new one
+    // Adjust new_mem to point to the user data part of the new block
+    memcpy((unsigned char*)new_mem + sizeof(struct hhMemoryBlockHeader), (unsigned char*)p, copySize);
+
+    // Free the old memory block
+    hhFree(p);
+
+    return new_mem;
 }
